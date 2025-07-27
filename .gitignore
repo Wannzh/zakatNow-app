@@ -1,0 +1,11 @@
+# Java
+/backend/target
+/backend/.idea
+
+# Node
+/frontend/node_modules
+/frontend/.next
+/frontend/dist
+
+# OS/mac
+.DS_Store
