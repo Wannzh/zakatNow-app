@@ -58,7 +58,9 @@ public class WebSecurityConfig {
                                                                 "api/campaigns/{id}/request-cancel",
                                                                 "/api/campaigns/update/**",
                                                                 "/api/role-upgrade/admin/**",
-                                                                "/api/donations/admin/history")
+                                                                "/api/donations/admin/history",
+                                                                "/api/reports",
+                                                                "/api/reports/**")
                                                 .hasAuthority("ROLE_ADMIN")
 
                                                 // User
