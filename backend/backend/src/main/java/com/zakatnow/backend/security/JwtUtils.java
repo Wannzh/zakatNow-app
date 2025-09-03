@@ -2,6 +2,7 @@ package com.zakatnow.backend.security;
 
 import java.util.Date;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.JwtException;
@@ -10,8 +11,10 @@ import jakarta.servlet.http.HttpServletRequest;
 
 @Component
 public class JwtUtils {
-    private final String jwtSecret = "secretZakatNow2025ProjekAlwanPUB";
-    private final int jwtExpirationsMs = 86400000;
+    @Value("${JWT_SECRET}")
+    private String jwtSecret;
+    @Value("${JWT_EXPIRATION_MS:86400000}")
+    private int jwtExpirationsMs;
 
     public String generateJwtToken(org.springframework.security.core.Authentication authentication) {
         String username = authentication.getName();

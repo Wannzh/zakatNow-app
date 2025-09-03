@@ -1,5 +1,6 @@
 package com.zakatnow.backend.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,11 +17,28 @@ import java.util.Set;
 
 @Configuration
 public class DataInitializer {
+    @Value("${ADMIN_USERNAME}")
+    private String adminUsername;
+
+    @Value("${ADMIN_EMAIL}")
+    private String adminEmail;
+
+    @Value("${ADMIN_PASSWORD}")
+    private String adminPassword;
+
+    @Value("${ADMIN_FULLNAME:Administrator}")
+    private String adminFullName;
+
+    @Value("${ADMIN_PHONE:}")
+    private String adminPhone;
+
+    @Value("${ADMIN_ADDRESS:}")
+    private String adminAddress;
 
     @Bean
-    CommandLineRunner initData(RoleRepository roleRepository, 
-                               UserRepository userRepository,
-                               PasswordEncoder passwordEncoder) {
+    CommandLineRunner initData(RoleRepository roleRepository,
+            UserRepository userRepository,
+            PasswordEncoder passwordEncoder) {
         return args -> {
             // --- Inisialisasi Roles ---
             for (ERole erole : ERole.values()) {
@@ -32,25 +50,26 @@ public class DataInitializer {
             }
 
             // --- Inisialisasi Admin Default ---
-            if (!userRepository.existsByUsername("admin")) {
-                User admin = new User();
-                admin.setUsername("admin");
-                admin.setEmail("admin@zakatnow.com");
-                admin.setPassword(passwordEncoder.encode("admin123")); // default password
-                admin.setFullName("Administrator");
-                admin.setPhoneNumber("081234567890");
-                admin.setAddress("ZakatNow HQ");
-                admin.setEnabled(true);
-
-                // Set role ADMIN
-                Set<Role> roles = new HashSet<>();
+            if (!userRepository.existsByUsername(adminUsername)) {
                 Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
                         .orElseThrow(() -> new RuntimeException("Role ADMIN not found"));
+
+                Set<Role> roles = new HashSet<>();
                 roles.add(adminRole);
-                admin.setRoles(roles);
+
+                User admin = User.builder()
+                        .username(adminUsername)
+                        .email(adminEmail)
+                        .password(passwordEncoder.encode(adminPassword))
+                        .fullName(adminFullName)
+                        .phoneNumber(adminPhone)
+                        .address(adminAddress)
+                        .enabled(true)
+                        .roles(roles)
+                        .build();
 
                 userRepository.save(admin);
-                System.out.println("Default admin account created: admin / admin123");
+                System.out.printf("Default admin account created: %s%n", adminUsername);
             }
         };
     }
