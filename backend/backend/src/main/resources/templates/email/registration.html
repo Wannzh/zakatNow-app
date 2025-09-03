@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <style>
+      body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f5f7fa; }
+      .container { max-width: 600px; margin: 20px auto; background: #ffffff; border-radius: 6px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,.1);}
+      .header { background: #2c7a7b; padding: 15px; text-align: center; }
+      .header img { height: 60px; }
+      .header h2 { color: #ffffff; margin: 5px 0 0 0; font-weight: 500; }
+      .content { padding: 25px; font-size: 14px; color: #333; }
+      .cta { margin: 25px 0; text-align: center; }
+      .cta a {
+        background: #2c7a7b;
+        color: #ffffff;
+        text-decoration: none;
+        padding: 10px 18px;
+        border-radius: 4px;
+        font-size: 14px;
+        font-weight: bold;
+        display: inline-block;
+      }
+      .cta a:hover { cursor: pointer; background: #256768; }
+      .footer { text-align: center; font-size: 12px; color: #888; padding: 15px; }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <img src="cid:logo-doc" alt="ZakatNow Logo" />
+        <h2>ZakatNow</h2>
+      </div>
+      <div class="content">
+        <p>Halo <span th:text="${name}">User</span>,</p>
+        <p>Selamat! Akun Anda telah berhasil didaftarkan di <strong>ZakatNow</strong>.</p>
+        <p>Terima kasih telah bergabung dan menjadi bagian dari komunitas peduli sesama.</p>
+
+        <div class="cta">
+          <a th:href="@{https://zakatnow.example.com/login}" target="_blank">Login Sekarang</a>
+        </div>
+      </div>
+      <div class="footer">&copy; 2025 ZakatNow. Semua hak dilindungi.</div>
+    </div>
+  </body>
+</html>

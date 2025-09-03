@@ -49,7 +49,8 @@ public class WebSecurityConfig {
                                                                 "/configuration/ui",
                                                                 "/configuration/security",
                                                                 "/webjars/**",
-                                                                "/api/donations/webhook/xendit")
+                                                                "/api/donations/webhook/xendit",
+                                                                "/api/test-email/**")
                                                 .permitAll()
 
                                                 // Admin
