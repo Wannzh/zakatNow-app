@@ -5,7 +5,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.zakatnow.backend.entity.User;
 import com.zakatnow.backend.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -18,10 +17,10 @@ public class CustomeUserDetailService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username)
+        return userRepository.findByUsername(username)
+                .map(CustomeUserDetails::new) 
                 .orElseThrow(() -> new UsernameNotFoundException("User tidak ditemukan: " + username));
 
-        return new CustomeUserDetails(user);
     }
 
 }

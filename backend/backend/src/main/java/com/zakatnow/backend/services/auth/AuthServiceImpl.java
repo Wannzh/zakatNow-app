@@ -1,4 +1,4 @@
-package com.zakatnow.backend.services;
+package com.zakatnow.backend.services.auth;
 
 import java.util.HashSet;
 import java.util.List;
@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +20,7 @@ import com.zakatnow.backend.dto.common.MessageResponse;
 import com.zakatnow.backend.entity.Role;
 import com.zakatnow.backend.entity.User;
 import com.zakatnow.backend.enums.ERole;
+import com.zakatnow.backend.exception.UserNotFoundException;
 import com.zakatnow.backend.repository.RoleRepository;
 import com.zakatnow.backend.repository.UserRepository;
 import com.zakatnow.backend.security.CustomeUserDetails;
@@ -43,6 +45,8 @@ public class AuthServiceImpl implements AuthService {
                         loginRequest.getUsername(),
                         loginRequest.getPassword()));
 
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
         String jwt = jwtUtils.generateJwtToken(authentication);
 
         var userDetails = (CustomeUserDetails) authentication.getPrincipal();
@@ -62,7 +66,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public ResponseEntity<?> register(SignupRequest signUpRequest) {
+    public ResponseEntity<MessageResponse> register(SignupRequest signUpRequest) {
         if (userRepository.existsByUsername(signUpRequest.getUsername())) {
             return ResponseEntity.badRequest()
                     .body(new MessageResponse("Error: Username sudah dipakai!"));
@@ -85,7 +89,7 @@ public class AuthServiceImpl implements AuthService {
 
         // Default role USER
         Role userRole = roleRepository.findByName(ERole.ROLE_USER)
-                .orElseThrow(() -> new RuntimeException("Error: Role ROLE_USER tidak ditemukan."));
+                .orElseThrow(() -> new UserNotFoundException("Role ROLE_USER tidak ditemukan."));
 
         Set<Role> roles = new HashSet<>();
         roles.add(userRole);

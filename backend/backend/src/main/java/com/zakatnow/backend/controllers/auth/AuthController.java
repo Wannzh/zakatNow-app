@@ -7,7 +7,8 @@ import org.springframework.web.bind.annotation.*;
 import com.zakatnow.backend.dto.auth.JwtResponse;
 import com.zakatnow.backend.dto.auth.LoginRequest;
 import com.zakatnow.backend.dto.auth.SignupRequest;
-import com.zakatnow.backend.services.AuthService;
+import com.zakatnow.backend.dto.common.MessageResponse;
+import com.zakatnow.backend.services.auth.AuthService;
 
 import jakarta.validation.Valid;
 
@@ -24,7 +25,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@Valid @RequestBody SignupRequest signUpRequest) {
+    public ResponseEntity<MessageResponse> register(@Valid @RequestBody SignupRequest signUpRequest) {
         return authService.register(signUpRequest);
     }
 }

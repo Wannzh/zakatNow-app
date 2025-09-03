@@ -46,7 +46,9 @@ public class Campaign {
     @Column(columnDefinition = "TEXT")
     private String description;
     private Double targetAmount;
-    private Double collectedAmount;
+
+    @Builder.Default
+    private Double collectedAmount = 0.0;
     private String imageUrl;
 
     @Enumerated(EnumType.STRING)
@@ -55,6 +57,13 @@ public class Campaign {
     private LocalDate startDate;
     private LocalDate endDate;
     private LocalDateTime createdAt;
+
+    @Column(name = "cancel_requested")
+    @Builder.Default
+    private boolean cancelRequested = false;
+
+    @Column(name = "cancel_reason")
+    private String cancelReason;
 
     // Relasi ke Campaigner
     @ManyToOne
@@ -69,9 +78,7 @@ public class Campaign {
     // Relasi ke Category
     @Builder.Default
     @ManyToMany
-    @JoinTable(name = "campaign_categories",
-            joinColumns = @JoinColumn(name = "campaign_id"),
-            inverseJoinColumns = @JoinColumn(name = "category_id"))
+    @JoinTable(name = "campaign_categories", joinColumns = @JoinColumn(name = "campaign_id"), inverseJoinColumns = @JoinColumn(name = "category_id"))
     private Set<Category> categories = new HashSet<>();
 
     // Relasi ke Report

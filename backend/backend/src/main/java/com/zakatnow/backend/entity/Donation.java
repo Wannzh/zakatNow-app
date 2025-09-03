@@ -54,4 +54,11 @@ public class Donation {
     @ManyToOne
     @JoinColumn(name = "campaign_id")
     private Campaign campaign;
+
+    @Column(unique = true)
+    private String externalId; // ID unik untuk Xendit
+
+    private String invoiceUrl; // URL pembayaran Xendit
+
+    private String xenditInvoiceId; // ID invoice Xendit
 }
