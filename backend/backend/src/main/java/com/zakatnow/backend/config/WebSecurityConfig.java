@@ -60,8 +60,16 @@ public class WebSecurityConfig {
                                                                 "/api/role-upgrade/admin/**",
                                                                 "/api/donations/admin/history",
                                                                 "/api/reports",
-                                                                "/api/reports/**")
+                                                                "/api/reports/**",
+                                                                "/api/withdraws",
+                                                                "/api/withdraws/{id}/**")
                                                 .hasAuthority("ROLE_ADMIN")
+
+                                                // Campaigner
+                                                .requestMatchers(
+                                                                "api/withdraws/request",
+                                                                "api/withdraws/campaign/{campaignId}")
+                                                .hasAuthority("ROLE_CAMPAIGNER")
 
                                                 // User
                                                 .requestMatchers(
