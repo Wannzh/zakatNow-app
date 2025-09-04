@@ -12,7 +12,6 @@ import com.zakatnow.backend.enums.CampaignStatus;
 import com.zakatnow.backend.event.CampaignDeadlineEvent;
 import com.zakatnow.backend.repository.CampaignRepository;
 import com.zakatnow.backend.repository.DonationRepository;
-import com.zakatnow.backend.services.notification.EmailNotificationService;
 
 import lombok.RequiredArgsConstructor;
 

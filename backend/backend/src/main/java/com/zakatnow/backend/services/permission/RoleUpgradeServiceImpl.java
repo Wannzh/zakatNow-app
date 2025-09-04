@@ -14,7 +14,6 @@ import com.zakatnow.backend.event.UserUpgradeRoleEvent;
 import com.zakatnow.backend.repository.RoleRepository;
 import com.zakatnow.backend.repository.RoleUpgradeRequestRepository;
 import com.zakatnow.backend.repository.UserRepository;
-import com.zakatnow.backend.services.notification.EmailNotificationService;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +22,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class RoleUpgradeServiceImpl implements RoleUpgradeService {
     private final RoleUpgradeRequestRepository requestRepository;
-    private final EmailNotificationService emailNotificationService;
     private final ApplicationEventPublisher publisher;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
