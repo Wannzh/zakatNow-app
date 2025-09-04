@@ -2,11 +2,13 @@ import { useState } from 'react';
 import { login } from '../api/auth';
 import { showSuccess, showError } from '../components/Toast';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 export default function LoginPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
+    const { t } = useTranslation();
 
     const handleLogin = async (e) => {
         e.preventDefault();
