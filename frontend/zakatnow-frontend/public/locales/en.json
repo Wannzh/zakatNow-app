@@ -1,0 +1,43 @@
+{
+  "common": {
+    "appName": "ZakatNow",
+    "yes": "Yes",
+    "no": "No",
+    "cancel": "Cancel",
+    "save": "Save",
+    "loading": "Loading...",
+    "success": "Success",
+    "error": "Error",
+    "logout": "Logout"
+  },
+  "auth": {
+    "login": "Login",
+    "register": "Register",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "haveAccount": "Already have an account?",
+    "noAccount": "Don't have an account?",
+    "rememberMe": "Remember Me",
+    "forgotPassword": "Forgot Password?"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "welcome": "Welcome, {{name}}!",
+    "campaignList": "Campaign List"
+  },
+  "campaign": {
+    "create": "Create Campaign",
+    "title": "Title",
+    "description": "Description",
+    "goal": "Goal Amount",
+    "deadline": "Deadline",
+    "uploadImage": "Upload Image",
+    "donate": "Donate"
+  },
+  "errors": {
+    "notFound": "Page Not Found",
+    "unauthorized": "You are not authorized to access this page",
+    "serverError": "Server Error"
+  }
+}
