@@ -57,7 +57,6 @@ public class DonationServiceImpl implements DonationService {
             case BANK_TRANSFER, EWALLET -> {
                 invoiceData.put("payment_method", method.name());
                 invoiceData.put("callback_url", "https://8e7aa9a940b2.ngrok-free.app/api/donations/webhook/xendit");
-
             }
             case QRIS -> {
                 invoiceData.put("payment_method", "QRIS");
