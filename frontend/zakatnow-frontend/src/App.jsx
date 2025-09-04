@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -16,6 +17,8 @@ export default function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
         <Route path="*" element={<NotFound />} />
+        {/* routes */}
+        <ToastContainer position="top-right" autoClose={3000} />
       </Routes>
     </Router>
   )
