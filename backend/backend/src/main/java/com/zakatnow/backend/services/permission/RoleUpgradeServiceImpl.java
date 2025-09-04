@@ -2,6 +2,7 @@ package com.zakatnow.backend.services.permission;
 
 import java.time.LocalDateTime;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import com.zakatnow.backend.entity.Role;
@@ -9,9 +10,11 @@ import com.zakatnow.backend.entity.RoleUpgradeRequest;
 import com.zakatnow.backend.entity.User;
 import com.zakatnow.backend.enums.ERole;
 import com.zakatnow.backend.enums.RequestStatus;
+import com.zakatnow.backend.event.UserUpgradeRoleEvent;
 import com.zakatnow.backend.repository.RoleRepository;
 import com.zakatnow.backend.repository.RoleUpgradeRequestRepository;
 import com.zakatnow.backend.repository.UserRepository;
+import com.zakatnow.backend.services.notification.EmailNotificationService;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +23,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class RoleUpgradeServiceImpl implements RoleUpgradeService {
     private final RoleUpgradeRequestRepository requestRepository;
+    private final EmailNotificationService emailNotificationService;
+    private final ApplicationEventPublisher publisher;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
 
@@ -68,6 +73,9 @@ public class RoleUpgradeServiceImpl implements RoleUpgradeService {
         request.setStatus(RequestStatus.APPROVED);
         requestRepository.save(request);
 
+        // kirim notifikasi hasil
+        publisher.publishEvent(new UserUpgradeRoleEvent(this, user.getEmail(), user.getFullName()));
+
         return user.getUsername();
     }
 
@@ -85,6 +93,9 @@ public class RoleUpgradeServiceImpl implements RoleUpgradeService {
 
         request.setStatus(RequestStatus.REJECTED);
         requestRepository.save(request);
+
+        // kirim notifikasi hasil
+        publisher.publishEvent(new UserUpgradeRoleEvent(this, user.getEmail(), user.getFullName()));
 
         return user.getUsername();
     }

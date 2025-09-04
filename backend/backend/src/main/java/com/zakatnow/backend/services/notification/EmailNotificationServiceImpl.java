@@ -1,5 +1,8 @@
 package com.zakatnow.backend.services.notification;
 
+import java.io.InputStream;
+
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -7,7 +10,7 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
-import jakarta.mail.MessagingException;
+import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 
@@ -20,31 +23,36 @@ public class EmailNotificationServiceImpl implements EmailNotificationService {
     private void sendHtmlEmail(String to, String subject, String templateName, Context context) {
         try {
             MimeMessage mimeMessage = mailSender.createMimeMessage();
-            // multipart=true agar bisa attach inline image
-            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "utf-8"); // <- true artinya multipart
 
             String htmlContent = templateEngine.process("email/" + templateName, context);
+            helper.setText(htmlContent, true);
             helper.setTo(to);
             helper.setSubject(subject);
-            helper.setFrom("zakatNow@gmail.com");
-            helper.setText(htmlContent, true);
+            helper.setFrom(new InternetAddress("alwanfdhlrhmn@gmail.com", "ZakatNow"));
 
-            // sisipkan logo sebagai inline image
-            ClassPathResource logo = new ClassPathResource("static/logo-email.png");
-            if (logo.exists()) {
-                helper.addInline("logoEmail", logo);
+
+            // attach logo sebagai inline image
+            try (InputStream logoStream = new ClassPathResource("static/logo-doc.png").getInputStream()) {
+                if (logoStream != null) {
+                    helper.addInline("logo-doc", new ByteArrayResource(logoStream.readAllBytes()), "image/png");
+                } else {
+                    System.out.println("Logo tidak ditemukan di resources/static/");
+                }
             }
 
             mailSender.send(mimeMessage);
-        } catch (MessagingException e) {
+        } catch (Exception e) {
+            e.printStackTrace();
             throw new RuntimeException("Failed to send email", e);
         }
     }
 
     @Override
-    public void sendRegistrationSuccess(String to, String name) {
+    public void sendRegistrationSuccess(String to, String fullName) {
         Context ctx = new Context();
-        ctx.setVariable("name", name);
+        ctx.setVariable("fullName", fullName);
+        System.out.println("DEBUG fullName = " + fullName);
         sendHtmlEmail(to, "Welcome to ZakatNow", "registration", ctx);
     }
 

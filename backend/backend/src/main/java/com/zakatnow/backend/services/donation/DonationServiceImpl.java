@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import com.xendit.exception.XenditException;
 import com.xendit.model.Invoice;
 import com.zakatnow.backend.enums.PaymentMethod;
+import com.zakatnow.backend.event.DonationSuccessEvent;
 import com.zakatnow.backend.dto.donation.DonationResponse;
 import com.zakatnow.backend.dto.donation.HistoryDonationAllResponse;
 import com.zakatnow.backend.entity.Campaign;
@@ -29,6 +31,7 @@ import lombok.RequiredArgsConstructor;
 public class DonationServiceImpl implements DonationService {
     private final DonationRepository donationRepository;
     private final CampaignRepository campaignRepository;
+    private final ApplicationEventPublisher publisher;
 
     @Override
     public DonationResponse createDonationInvoice(User user, Campaign campaign, Double amount, PaymentMethod method)
@@ -69,6 +72,8 @@ public class DonationServiceImpl implements DonationService {
         donation.setInvoiceUrl(invoice.getInvoiceUrl()); // URL untuk scan QR atau redirect
 
         donationRepository.save(donation);
+
+        publisher.publishEvent(new DonationSuccessEvent(this, campaign.getCreatedBy().getEmail(), campaign.getTitle(), amount));
 
         return DonationResponse.builder()
                 .id(donation.getId())
@@ -132,6 +137,6 @@ public class DonationServiceImpl implements DonationService {
     @Override
     public Page<HistoryDonationAllResponse> getAllDonations(Pageable pageable) {
         return donationRepository.findAll(pageable)
-            .map(d -> HistoryDonationAllResponse.fromEntity(d));
+                .map(d -> HistoryDonationAllResponse.fromEntity(d));
     }
 }
