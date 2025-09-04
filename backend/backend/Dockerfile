@@ -1,5 +1,5 @@
 # Stage 1: Build
-FROM maven:3.9.5-openjdk-21 AS build
+FROM jelastic/maven:3.9.5-openjdk-21 AS build
 
 # Set working directory
 WORKDIR /app
@@ -12,7 +12,7 @@ COPY src ./src
 RUN mvn clean package -DskipTests
 
 # Stage 2: Runtime
-FROM eclipse-temurin:21-jdk-focal
+FROM openjdk:21-slim
 WORKDIR /app
 
 # Copy hasil build dari stage sebelumnya
