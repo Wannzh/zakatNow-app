@@ -8,6 +8,16 @@ WORKDIR /app
 COPY pom.xml .
 COPY src ./src
 
+# Copy JAR lokal ke container
+COPY libs/xendit-java-lib-2.12.0.jar ./libs/
+RUN mvn install:install-file \
+    -Dfile=libs/xendit-java-lib-2.12.0.jar \
+    -DgroupId=com.xendit \
+    -DartifactId=xendit-java-lib \
+    -Dversion=2.12.0 \
+    -Dpackaging=jar
+
+
 # Build JAR tanpa test
 RUN mvn clean package -DskipTests
 

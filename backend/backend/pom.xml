@@ -155,14 +155,6 @@
 
 	</dependencies>
 
-	<repositories>
-		<repository>
-			<id>xendit-maven</id>
-			<url>https://jitpack.io</url>
-		</repository>
-	</repositories>
-
-
 	<build>
 		<plugins>
 			<plugin>
