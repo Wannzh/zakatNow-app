@@ -18,6 +18,7 @@ import AdminDonations from './pages/AdminDonations';
 import AdminWithdrawals from './pages/AdminWithdrawls';
 import AdminReports from './pages/AdminReports';
 import CampaignDetailPage from './pages/CampaignDetail';
+import DonationPage from './pages/DonationPage';
 
 export default function App() {
   return (
@@ -59,6 +60,9 @@ export default function App() {
         {/* Route Donation */}
         <Route path="/admin-donations" element={
           <ProtectedRoute><ProtectedLayout isAdmin="true"><AdminDonations /></ProtectedLayout></ProtectedRoute>
+        } />
+        <Route path="/campaigns/:id/donate" element={
+          <ProtectedRoute><ProtectedLayout ><DonationPage /></ProtectedLayout></ProtectedRoute>
         } />
 
         {/* Route Withdraws */}

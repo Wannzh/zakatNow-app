@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
@@ -37,7 +38,6 @@ public class DonationServiceImpl implements DonationService {
     public DonationResponse createDonationInvoice(User user, Campaign campaign, Double amount, PaymentMethod method)
             throws XenditException {
 
-        // Simpan donasi
         Donation donation = Donation.builder()
                 .user(user)
                 .campaign(campaign)
@@ -60,15 +60,14 @@ public class DonationServiceImpl implements DonationService {
             }
             case QRIS -> {
                 invoiceData.put("payment_method", "QRIS");
-                invoiceData.put("type", "DYNAMIC"); // optional, untuk dynamic QR
+                invoiceData.put("type", "DYNAMIC");
                 invoiceData.put("callback_url", "https://zakatnow-backend.onrender.com/api/donations/webhook/xendit");
             }
         }
 
-        // Buat invoice Xendit
         Invoice invoice = Invoice.create(invoiceData);
         donation.setXenditInvoiceId(invoice.getId());
-        donation.setInvoiceUrl(invoice.getInvoiceUrl()); // URL untuk scan QR atau redirect
+        donation.setInvoiceUrl(invoice.getInvoiceUrl());
 
         donationRepository.save(donation);
 
@@ -103,13 +102,13 @@ public class DonationServiceImpl implements DonationService {
 
             donationRepository.save(donation);
 
-            // Hanya update collectedAmount jika status berubah menjadi CONFIRMED dari
-            // status lain
             if (donation.getStatus() == DonationStatus.CONFIRMED &&
                     previousStatus != DonationStatus.CONFIRMED) {
 
                 Campaign campaign = donation.getCampaign();
-                campaign.setCollectedAmount(campaign.getCollectedAmount() + donation.getAmount());
+                // Perbaikan di sini: Menangani nilai null dengan aman
+                Double currentCollected = Optional.ofNullable(campaign.getCollectedAmount()).orElse(0.0);
+                campaign.setCollectedAmount(currentCollected + donation.getAmount());
                 campaignRepository.save(campaign);
             }
         }
@@ -137,5 +136,23 @@ public class DonationServiceImpl implements DonationService {
     public Page<HistoryDonationAllResponse> getAllDonations(Pageable pageable) {
         return donationRepository.findAll(pageable)
                 .map(d -> HistoryDonationAllResponse.fromEntity(d));
+    }
+
+    @Override
+    public DonationResponse getDonationByExternalId(String externalId) {
+        Donation donation = donationRepository.findByExternalId(externalId);
+        if (donation == null) {
+            return null; // Atau lempar exception
+        }
+        return DonationResponse.builder()
+                .id(donation.getId())
+                .externalId(donation.getExternalId())
+                .amount(donation.getAmount())
+                .paymentMethod(donation.getPaymentMethod())
+                .status(donation.getStatus())
+                .invoiceUrl(donation.getInvoiceUrl())
+                .xenditInvoiceId(donation.getXenditInvoiceId())
+                .donatedAt(donation.getDonatedAt())
+                .build();
     }
 }

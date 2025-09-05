@@ -18,6 +18,7 @@ public interface DonationService {
             throws XenditException;
 
     void handleWebhook(Map<String, Object> payload);
+    DonationResponse getDonationByExternalId(String externalId);
     List<DonationResponse> getUserDonations(String userId);
     Page<HistoryDonationAllResponse> getAllDonations(Pageable pageable);
 }

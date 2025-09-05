@@ -1,4 +1,3 @@
-// src/pages/CampaignDetailPage.jsx
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -6,9 +5,7 @@ import { motion } from "framer-motion";
 import { getCampaignById } from "../api/campaign";
 import { FaUserCircle } from "react-icons/fa";
 
-// Perbaikan: Komponen Progress Bar
 const ProgressBar = ({ current, target }) => {
-  // Pastikan nilai current dan target adalah angka. Jika tidak, atur ke 0.
   const numericCurrent = typeof current === 'number' ? current : 0;
   const numericTarget = typeof target === 'number' ? target : 0;
   const percentage = numericTarget > 0 ? (numericCurrent / numericTarget) * 100 : 0;
@@ -43,11 +40,17 @@ export default function CampaignDetailPage() {
         setLoading(false);
       }
     };
+    
     fetchCampaign();
-  }, [id]);
+    
+    const interval = setInterval(fetchCampaign, 10000);
+
+    return () => clearInterval(interval);
+
+  }, [id, t]);
 
   if (loading) return <div className="text-white text-center p-12 min-h-screen bg-green-700">{t("common.loading")}</div>;
-  if (error || !campaign) { // <-- Perbaikan ada di sini: Menambahkan !campaign check
+  if (error || !campaign) {
       return <div className="text-white text-center p-12 min-h-screen bg-green-700">{t("errors.notFound")}</div>;
   }
   
@@ -78,17 +81,14 @@ export default function CampaignDetailPage() {
 
         <p className="text-green-100 leading-relaxed mb-8">{campaign.description}</p>
 
-        {/* Detail Donasi & Progress */}
         <div className="bg-white/10 p-6 rounded-lg">
           <ProgressBar current={campaign.currentAmount} target={campaign.targetAmount} />
           <div className="flex justify-between items-center mt-2 text-sm">
-            {/* Menggunakan fungsi yang sudah diperbaiki */}
             <p><span className="font-bold text-yellow-300">{formatCurrency(campaign.currentAmount)}</span> {t("table.collected")}</p>
             <p>{t("table.target")}: {formatCurrency(campaign.targetAmount)}</p>
           </div>
         </div>
 
-        {/* Tombol Aksi */}
         <div className="mt-8">
             <Link 
                 to={`/campaigns/${id}/donate`}

@@ -7,8 +7,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -39,17 +41,14 @@ public class DonationController {
             @RequestParam Double amount,
             @RequestParam PaymentMethod paymentMethod) throws XenditException {
 
-        // Ambil user yang sedang login
         var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (!(principal instanceof CustomeUserDetails userDetails)) {
             throw new RuntimeException("User tidak ditemukan");
         }
         User user = userDetails.getUser();
 
-        // Ambil campaign
         Campaign campaign = campaignService.getById(campaignId);
 
-        // Buat donation & invoice Xendit
         return donationService.createDonationInvoice(user, campaign, amount, paymentMethod);
     }
 
@@ -85,4 +84,12 @@ public class DonationController {
         return donationService.getAllDonations(pageable);
     }
 
+    @GetMapping("/status/{externalId}")
+    public ResponseEntity<DonationResponse> getDonationStatus(@PathVariable String externalId) {
+        DonationResponse donation = donationService.getDonationByExternalId(externalId);
+        if (donation == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(donation);
+    }
 }
