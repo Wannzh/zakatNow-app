@@ -32,9 +32,14 @@ public class CampaignController {
 
     @PostMapping("/create")
     public ResponseEntity<CampaignResponse> create(@Valid @RequestBody CampaignRequest request,
-                                   @RequestParam String userId) {
+            @RequestParam String userId) {
         CampaignResponse response = campaignService.createCampaign(request, userId);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @GetMapping("/list")
+    public List<CampaignResponse> getCampaignList() {
+        return campaignService.getAllCampaignsAsList();
     }
 
     @GetMapping()
@@ -42,12 +47,12 @@ public class CampaignController {
         List<CampaignResponse> campaigns;
 
         if (status != null) {
-        // kalau ada status di query param → filter sesuai status
-        campaigns = campaignService.getCampaignsByStatus(status);
-    } else {
-        // default → hanya ACTIVE
-        campaigns = campaignService.getCampaignsByStatus(CampaignStatus.ACTIVE);
-    }
+            // kalau ada status di query param → filter sesuai status
+            campaigns = campaignService.getCampaignsByStatus(status);
+        } else {
+            // default → hanya ACTIVE
+            campaigns = campaignService.getCampaignsByStatus(CampaignStatus.ACTIVE);
+        }
 
         return ResponseEntity.ok(campaigns);
     }
@@ -55,14 +60,14 @@ public class CampaignController {
     @GetMapping("/{id}")
     public ResponseEntity<CampaignResponse> getById(@PathVariable String id) {
         CampaignResponse response = campaignService.getCampaignById(id);
-        return ResponseEntity.ok(response); 
+        return ResponseEntity.ok(response);
     }
 
     @PutMapping("/{id}/status")
     public ResponseEntity<CampaignResponse> updateStatus(@PathVariable String id,
-                                                         @RequestParam CampaignStatus status) {
+            @RequestParam CampaignStatus status) {
         CampaignResponse response = campaignService.updateStatus(id, status);
-        return ResponseEntity.ok(response); 
+        return ResponseEntity.ok(response);
     }
 
     @PatchMapping("/{id}/cancel")
@@ -75,8 +80,7 @@ public class CampaignController {
     public ResponseEntity<String> requestCancel(
             @PathVariable String id,
             @RequestParam(required = false) String reason,
-            @AuthenticationPrincipal CustomeUserDetails user
-    ) {
+            @AuthenticationPrincipal CustomeUserDetails user) {
         campaignService.requestCancelByCampaigner(id, reason, user.getId());
         return ResponseEntity.ok("Cancel request submitted for campaign ID " + id);
     }

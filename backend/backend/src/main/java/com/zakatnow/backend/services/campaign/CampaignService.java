@@ -15,5 +15,5 @@ public interface CampaignService {
     CampaignResponse cancelCampaignByAdmin(String campaignId);
     CampaignResponse requestCancelByCampaigner(String campaignId, String reason, String campaignerId);
     Campaign getById(String id);
-
+    List<CampaignResponse> getAllCampaignsAsList();
 }

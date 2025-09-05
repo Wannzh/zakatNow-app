@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.zakatnow.backend.dto.campaign.CampaignRequest;
@@ -22,6 +23,15 @@ import lombok.RequiredArgsConstructor;
 public class CampaignServiceImpl implements CampaignService {
     private final CampaignRepository campaignRepository;
     private final UserRepository userRepository;
+
+    @Override
+    public List<CampaignResponse> getAllCampaignsAsList() {
+        // Mengambil semua kampanye dari repository, diurutkan berdasarkan judul
+        return campaignRepository.findAll(Sort.by("title"))
+                .stream()
+                .map(this::mapToResponse)
+                .collect(Collectors.toList());
+    }
 
     @Override
     public CampaignResponse createCampaign(CampaignRequest request, String userId) {

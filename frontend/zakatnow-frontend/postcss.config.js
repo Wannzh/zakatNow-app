@@ -1,6 +1,10 @@
-import tailwindcss from '@tailwindcss/postcss'
-import autoprefixer from 'autoprefixer'
+// postcss.config.js (ESM)
+import tailwind from "@tailwindcss/postcss";
+import autoprefixer from "autoprefixer";
 
 export default {
-  plugins: [tailwindcss(), autoprefixer()],
-}
+  plugins: [
+    tailwind(),    // ini plugin resmi baru Tailwind 4
+    autoprefixer(), 
+  ],
+};

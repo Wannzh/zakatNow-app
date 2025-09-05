@@ -63,7 +63,8 @@ public class WebSecurityConfig {
                                                                 "/api/reports",
                                                                 "/api/reports/**",
                                                                 "/api/withdraws",
-                                                                "/api/withdraws/{id}/**")
+                                                                "/api/withdraws/{id}/**",
+                                                                "/api/campaigns/list")
                                                 .hasAuthority("ROLE_ADMIN")
 
                                                 // Campaigner
