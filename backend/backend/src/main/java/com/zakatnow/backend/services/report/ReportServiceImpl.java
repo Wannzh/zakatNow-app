@@ -1,7 +1,6 @@
 package com.zakatnow.backend.services.report;
 
 import java.awt.Color;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -10,27 +9,13 @@ import java.nio.file.Files;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-
-import org.apache.poi.ss.usermodel.BorderStyle;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.ClientAnchor;
-import org.apache.poi.ss.usermodel.CreationHelper;
-import org.apache.poi.ss.usermodel.Drawing;
-import org.apache.poi.ss.usermodel.FillPatternType;
-import org.apache.poi.ss.usermodel.Font;
-import org.apache.poi.ss.usermodel.HorizontalAlignment;
-import org.apache.poi.ss.usermodel.IndexedColors;
-import org.apache.poi.ss.usermodel.Picture;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
+import java.util.stream.Collectors;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.util.IOUtils;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
-
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
@@ -41,7 +26,6 @@ import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
-
 import com.zakatnow.backend.dto.report.ReportResponse;
 import com.zakatnow.backend.entity.Campaign;
 import com.zakatnow.backend.entity.Donation;
@@ -49,7 +33,6 @@ import com.zakatnow.backend.entity.Report;
 import com.zakatnow.backend.repository.CampaignRepository;
 import com.zakatnow.backend.repository.DonationRepository;
 import com.zakatnow.backend.repository.ReportRepository;
-
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -60,21 +43,19 @@ public class ReportServiceImpl implements ReportService {
     private final DonationRepository donationRepository;
 
     @Override
-    public ReportResponse createExcelReport(String campaignId, String description, LocalDate startDate,
-            LocalDate endDate)
-            throws IOException {
+    public ReportResponse createExcelReport(String campaignId, String description, LocalDate startDate, LocalDate endDate) throws IOException {
         Campaign campaign = campaignRepository.findById(campaignId)
                 .orElseThrow(() -> new RuntimeException("Campaign not found"));
 
         List<Donation> donations = donationRepository.findByCampaignId(campaignId).stream()
-                .filter(d -> !d.getDonatedAt().toLocalDate().isBefore(startDate) &&
+                .filter(d -> d.getDonatedAt() != null &&
+                        !d.getDonatedAt().toLocalDate().isBefore(startDate) &&
                         !d.getDonatedAt().toLocalDate().isAfter(endDate))
                 .toList();
 
         try (Workbook workbook = new XSSFWorkbook()) {
             Sheet sheet = workbook.createSheet("Donations Report");
 
-            // --- Styles ---
             CellStyle titleStyle = workbook.createCellStyle();
             Font titleFont = workbook.createFont();
             titleFont.setFontHeightInPoints((short) 16);
@@ -115,7 +96,6 @@ public class ReportServiceImpl implements ReportService {
             dateStyle.cloneStyleFrom(dataStyle);
             dateStyle.setDataFormat(workbook.createDataFormat().getFormat("dd-MM-yyyy HH:mm"));
 
-            // === Tambahkan Logo ===
             try (InputStream is = new ClassPathResource("static/logo-doc.png").getInputStream()) {
                 byte[] bytes = IOUtils.toByteArray(is);
                 int pictureIdx = workbook.addPicture(bytes, Workbook.PICTURE_TYPE_PNG);
@@ -125,30 +105,27 @@ public class ReportServiceImpl implements ReportService {
                 anchor.setCol1(0);
                 anchor.setRow1(0);
                 Picture pict = drawing.createPicture(anchor, pictureIdx);
-                pict.resize(2, 3); // ukuran logo
+                pict.resize(2, 3);
             } catch (Exception e) {
                 System.out.println("Logo not found, skipping...");
             }
 
             int rowIdx = 0;
 
-            // === Judul Laporan ===
             Row titleRow = sheet.createRow(rowIdx++);
             Cell titleCell = titleRow.createCell(2);
             titleCell.setCellValue("Donation Report");
             titleCell.setCellStyle(titleStyle);
             sheet.addMergedRegion(new CellRangeAddress(0, 0, 2, 5));
 
-            // === Info Campaign & Periode ===
             Row infoRow1 = sheet.createRow(rowIdx++);
             infoRow1.createCell(2).setCellValue("Campaign: " + campaign.getTitle());
 
             Row infoRow2 = sheet.createRow(rowIdx++);
             infoRow2.createCell(2).setCellValue("Period: " + startDate + " to " + endDate);
 
-            rowIdx++; // baris kosong sebelum tabel
+            rowIdx++;
 
-            // === Header Tabel ===
             String[] columns = { "Donor Name", "Email", "Amount", "Payment Method", "Status", "Donated At" };
             Row header = sheet.createRow(rowIdx++);
             for (int i = 0; i < columns.length; i++) {
@@ -157,16 +134,18 @@ public class ReportServiceImpl implements ReportService {
                 cell.setCellStyle(headerStyle);
             }
 
-            // === Data ===
             for (Donation d : donations) {
                 Row row = sheet.createRow(rowIdx++);
 
+                String donorName = (d.getUser() != null) ? d.getUser().getFullName() : "Anonymous";
+                String donorEmail = (d.getUser() != null) ? d.getUser().getEmail() : "N/A";
+
                 Cell cell0 = row.createCell(0);
-                cell0.setCellValue(d.getUser().getFullName());
+                cell0.setCellValue(donorName);
                 cell0.setCellStyle(dataStyle);
 
                 Cell cell1 = row.createCell(1);
-                cell1.setCellValue(d.getUser().getEmail());
+                cell1.setCellValue(donorEmail);
                 cell1.setCellStyle(dataStyle);
 
                 Cell cell2 = row.createCell(2);
@@ -186,7 +165,6 @@ public class ReportServiceImpl implements ReportService {
                 cell5.setCellStyle(dateStyle);
             }
 
-            // === Summary Total ===
             double totalAmount = donations.stream()
                     .mapToDouble(Donation::getAmount)
                     .sum();
@@ -201,12 +179,10 @@ public class ReportServiceImpl implements ReportService {
             totalValueCell.setCellValue(totalAmount);
             totalValueCell.setCellStyle(amountStyle);
 
-            // === Auto-size Kolom ===
             for (int i = 0; i < columns.length; i++) {
                 sheet.autoSizeColumn(i);
             }
 
-            // === Simpan File ===
             String fileName = "report-" + campaign.getId() + "-" + System.currentTimeMillis() + ".xlsx";
             String filePath = "reports/" + fileName;
             File dir = new File("reports");
@@ -217,7 +193,6 @@ public class ReportServiceImpl implements ReportService {
                 workbook.write(fos);
             }
 
-            // === Simpan Metadata ke DB ===
             Report report = Report.builder()
                     .description(description)
                     .fileUrl(filePath)
@@ -226,26 +201,18 @@ public class ReportServiceImpl implements ReportService {
                     .build();
 
             reportRepository.save(report);
-
-            return ReportResponse.builder()
-                    .id(report.getId())
-                    .description(report.getDescription())
-                    .fileUrl(report.getFileUrl())
-                    .reportDate(report.getReportDate())
-                    .campaignId(campaign.getId())
-                    .campaignTitle(campaign.getTitle())
-                    .build();
+            return mapToReportResponse(report);
         }
     }
 
     @Override
-    public ReportResponse createPdfReport(String campaignId, String description, LocalDate startDate, LocalDate endDate)
-            throws IOException {
+    public ReportResponse createPdfReport(String campaignId, String description, LocalDate startDate, LocalDate endDate) throws IOException {
         Campaign campaign = campaignRepository.findById(campaignId)
                 .orElseThrow(() -> new RuntimeException("Campaign not found"));
 
         List<Donation> donations = donationRepository.findByCampaignId(campaignId).stream()
-                .filter(d -> !d.getDonatedAt().toLocalDate().isBefore(startDate) &&
+                .filter(d -> d.getDonatedAt() != null &&
+                        !d.getDonatedAt().toLocalDate().isBefore(startDate) &&
                         !d.getDonatedAt().toLocalDate().isAfter(endDate))
                 .toList();
 
@@ -260,7 +227,6 @@ public class ReportServiceImpl implements ReportService {
             PdfWriter.getInstance(document, fos);
             document.open();
 
-            // === Tambahkan Logo ===
             try (InputStream is = new ClassPathResource("static/logo-doc.png").getInputStream()) {
                 Image logo = Image.getInstance(IOUtils.toByteArray(is));
                 logo.scaleToFit(100, 50);
@@ -270,28 +236,24 @@ public class ReportServiceImpl implements ReportService {
                 System.out.println("Logo not found, skipping...");
             }
 
-            // === Judul ===
             com.lowagie.text.Font titleFont = new com.lowagie.text.Font(com.lowagie.text.Font.HELVETICA, 16,
                     com.lowagie.text.Font.BOLD);
             Paragraph title = new Paragraph("Donation Report", titleFont);
             title.setAlignment(Paragraph.ALIGN_CENTER);
             document.add(title);
 
-            // Info
             DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
             document.add(new Paragraph("Campaign: " + campaign.getTitle()));
             document.add(new Paragraph("Period: " + startDate + " to " + endDate));
             document.add(Chunk.NEWLINE);
 
-            // === Tabel ===
             PdfPTable table = new PdfPTable(6);
             table.setWidthPercentage(100);
             table.setWidths(new float[] { 2, 3, 2, 2, 2, 3 });
 
             String[] headers = { "Donor Name", "Email", "Amount", "Payment Method", "Status", "Donated At" };
             for (String h : headers) {
-                com.lowagie.text.Font headerFontPdf = new com.lowagie.text.Font(com.lowagie.text.Font.HELVETICA, 12,
-                        com.lowagie.text.Font.BOLD);
+                com.lowagie.text.Font headerFontPdf = new com.lowagie.text.Font(com.lowagie.text.Font.HELVETICA, 12, com.lowagie.text.Font.BOLD);
                 PdfPCell cell = new PdfPCell(new Phrase(h, headerFontPdf));
                 cell.setHorizontalAlignment(Element.ALIGN_CENTER);
                 cell.setBackgroundColor(new Color(230, 230, 230));
@@ -299,17 +261,17 @@ public class ReportServiceImpl implements ReportService {
                 table.addCell(cell);
             }
 
-            // Data
             for (Donation d : donations) {
-                table.addCell(d.getUser().getFullName());
-                table.addCell(d.getUser().getEmail());
-                table.addCell(String.format("Rp %,.2f", d.getAmount())); // <-- tanpa spasi setelah koma
+                String donorName = (d.getUser() != null) ? d.getUser().getFullName() : "Anonymous";
+                String donorEmail = (d.getUser() != null) ? d.getUser().getEmail() : "N/A";
+                table.addCell(donorName);
+                table.addCell(donorEmail);
+                table.addCell(String.format("Rp %,.2f", d.getAmount()));
                 table.addCell(d.getPaymentMethod().name());
                 table.addCell(d.getStatus().name());
-                table.addCell(d.getDonatedAt().format(dtf)); // format tanggal rapi
+                table.addCell(d.getDonatedAt().format(dtf));
             }
 
-            // === Total ===
             double totalAmount = donations.stream().mapToDouble(Donation::getAmount).sum();
 
             PdfPCell totalCell = new PdfPCell(new Phrase("TOTAL DONATION",
@@ -330,53 +292,29 @@ public class ReportServiceImpl implements ReportService {
             document.close();
         }
 
-        // === Simpan Metadata ke DB ===
         Report report = Report.builder()
                 .description(description)
                 .fileUrl(filePath)
                 .reportDate(LocalDate.now())
                 .campaign(campaign)
                 .build();
-
         reportRepository.save(report);
 
-        return ReportResponse.builder()
-                .id(report.getId())
-                .description(report.getDescription())
-                .fileUrl(report.getFileUrl())
-                .reportDate(report.getReportDate())
-                .campaignId(campaign.getId())
-                .campaignTitle(campaign.getTitle())
-                .build();
+        return mapToReportResponse(report);
     }
 
     @Override
     public List<ReportResponse> getAllReports() {
         return reportRepository.findAll().stream()
-                .map(r -> ReportResponse.builder()
-                        .id(r.getId())
-                        .description(r.getDescription())
-                        .fileUrl(r.getFileUrl())
-                        .reportDate(r.getReportDate())
-                        .campaignId(r.getCampaign().getId())
-                        .campaignTitle(r.getCampaign().getTitle())
-                        .build())
-                .toList();
+                .map(this::mapToReportResponse)
+                .collect(Collectors.toList());
     }
 
     @Override
     public ReportResponse getReportById(String id) {
         Report report = reportRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Report not found"));
-
-        return ReportResponse.builder()
-                .id(report.getId())
-                .description(report.getDescription())
-                .fileUrl(report.getFileUrl())
-                .reportDate(report.getReportDate())
-                .campaignId(report.getCampaign().getId())
-                .campaignTitle(report.getCampaign().getTitle())
-                .build();
+        return mapToReportResponse(report);
     }
 
     @Override
@@ -388,7 +326,22 @@ public class ReportServiceImpl implements ReportService {
         if (!file.exists()) {
             throw new RuntimeException("Report file not found");
         }
-
         return Files.readAllBytes(file.toPath());
+    }
+
+    private ReportResponse mapToReportResponse(Report report) {
+        String format = "excel";
+        if (report.getFileUrl() != null && report.getFileUrl().toLowerCase().endsWith(".pdf")) {
+            format = "pdf";
+        }
+        return ReportResponse.builder()
+                .id(report.getId())
+                .description(report.getDescription())
+                .fileUrl(report.getFileUrl())
+                .reportDate(report.getReportDate())
+                .campaignId(report.getCampaign().getId())
+                .campaignTitle(report.getCampaign().getTitle())
+                .format(format)
+                .build();
     }
 }

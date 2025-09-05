@@ -16,6 +16,7 @@ import AdminCampaigns from './pages/AdminCampaigns';
 import CampaignForm from './components/CampaignsForm';
 import AdminDonations from './pages/AdminDonations';
 import AdminWithdrawals from './pages/AdminWithdrawls';
+import AdminReports from './pages/AdminReports';
 
 export default function App() {
   return (
@@ -49,9 +50,6 @@ export default function App() {
         <Route path="/admin-campaigns/create" element={
           <ProtectedRoute><ProtectedLayout isAdmin="true"><CampaignForm /></ProtectedLayout></ProtectedRoute>
         } />
-        <Route path="/admin-campaigns/edit/:id" element={
-          <ProtectedRoute><ProtectedLayout isAdmin="true"><CampaignForm /></ProtectedLayout></ProtectedRoute>
-        } />
 
         {/* Route Donation */}
         <Route path="/admin-donations" element={
@@ -65,6 +63,11 @@ export default function App() {
               <AdminWithdrawals />
             </ProtectedLayout>
           </ProtectedRoute>
+        } />
+
+        {/* Route Report */}
+        <Route path="/admin-reports" element={
+          <ProtectedRoute><ProtectedLayout isAdmin="true"><AdminReports /></ProtectedLayout></ProtectedRoute>
         } />
 
         <Route path="/unauthorized" element={<Unauthorized />} />

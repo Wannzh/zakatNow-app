@@ -14,4 +14,5 @@ public class ReportResponse {
     private LocalDate reportDate;
     private String campaignId;
     private String campaignTitle;
+    private String format;
 }
