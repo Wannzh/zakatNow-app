@@ -69,21 +69,21 @@ public class WebSecurityConfig {
 
                                                 // Campaigner
                                                 .requestMatchers(
-                                                                "api/withdraws/request",
-                                                                "api/withdraws/campaign/{campaignId}")
+                                                                "/api/withdraws/request",
+                                                                "/api/withdraws/campaign/{campaignId}")
                                                 .hasAuthority("ROLE_CAMPAIGNER")
 
                                                 // User
                                                 .requestMatchers(
-                                                                "api/role-upgrade/request/{userId}",
-                                                                "api/donations/create",
-                                                                "api/donations/history")
+                                                                "/api/role-upgrade/request/{userId}",
+                                                                "/api/donations/create",
+                                                                "/api/donations/history")
                                                 .hasAuthority("ROLE_USER")
 
                                                 // All Role
                                                 .requestMatchers(
-                                                                "api/campaigns",
-                                                                "api/campaigns/{id}")
+                                                                "/api/campaigns",
+                                                                "/api/campaigns/{id}")
                                                 .hasAnyAuthority("ROLE_USER", "ROLE_CAMPAIGNER", "ROLE_ADMIN")
 
                                                 // CAMPAIGNER + Admin

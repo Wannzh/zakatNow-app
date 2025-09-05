@@ -56,12 +56,12 @@ public class DonationServiceImpl implements DonationService {
         switch (method) {
             case BANK_TRANSFER, EWALLET -> {
                 invoiceData.put("payment_method", method.name());
-                invoiceData.put("callback_url", "https://8e7aa9a940b2.ngrok-free.app/api/donations/webhook/xendit");
+                invoiceData.put("callback_url", "https://zakatnow-backend.onrender.com/api/donations/webhook/xendit");
             }
             case QRIS -> {
                 invoiceData.put("payment_method", "QRIS");
                 invoiceData.put("type", "DYNAMIC"); // optional, untuk dynamic QR
-                invoiceData.put("callback_url", "https://8e7aa9a940b2.ngrok-free.app/api/donations/webhook/xendit");
+                invoiceData.put("callback_url", "https://zakatnow-backend.onrender.com/api/donations/webhook/xendit");
             }
         }
 

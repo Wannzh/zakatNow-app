@@ -6,9 +6,13 @@ import { motion } from "framer-motion";
 import { getCampaignById } from "../api/campaign";
 import { FaUserCircle } from "react-icons/fa";
 
-// Komponen Progress Bar
+// Perbaikan: Komponen Progress Bar
 const ProgressBar = ({ current, target }) => {
-  const percentage = target > 0 ? (current / target) * 100 : 0;
+  // Pastikan nilai current dan target adalah angka. Jika tidak, atur ke 0.
+  const numericCurrent = typeof current === 'number' ? current : 0;
+  const numericTarget = typeof target === 'number' ? target : 0;
+  const percentage = numericTarget > 0 ? (numericCurrent / numericTarget) * 100 : 0;
+  
   return (
     <div className="w-full bg-white/20 rounded-full h-4 my-2">
       <motion.div
@@ -43,9 +47,14 @@ export default function CampaignDetailPage() {
   }, [id]);
 
   if (loading) return <div className="text-white text-center p-12 min-h-screen bg-green-700">{t("common.loading")}</div>;
-  if (error) return <div className="text-white text-center p-12 min-h-screen bg-green-700">{t("errors.notFound")}</div>;
+  if (error || !campaign) { // <-- Perbaikan ada di sini: Menambahkan !campaign check
+      return <div className="text-white text-center p-12 min-h-screen bg-green-700">{t("errors.notFound")}</div>;
+  }
   
-  const formatCurrency = (amount) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(amount);
+  const formatCurrency = (amount) => {
+    const numericAmount = typeof amount === 'number' ? amount : 0;
+    return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(numericAmount);
+  };
 
   return (
     <main className="min-h-screen p-4 sm:p-8 bg-gradient-to-br from-green-600 via-emerald-500 to-green-700 text-white">
@@ -64,7 +73,7 @@ export default function CampaignDetailPage() {
 
         <div className="flex items-center gap-3 text-green-200 text-sm mb-6">
             <FaUserCircle size={24} />
-            <span>Diinisiasi oleh <strong>{campaign.campaignerName || 'Anonim'}</strong></span>
+            <span dangerouslySetInnerHTML={{ __html: t("campaignDetail.initiatedBy", { name: campaign.campaignerName || t("common.anonymous") }) }}></span>
         </div>
 
         <p className="text-green-100 leading-relaxed mb-8">{campaign.description}</p>
@@ -73,8 +82,9 @@ export default function CampaignDetailPage() {
         <div className="bg-white/10 p-6 rounded-lg">
           <ProgressBar current={campaign.currentAmount} target={campaign.targetAmount} />
           <div className="flex justify-between items-center mt-2 text-sm">
-            <p><span className="font-bold text-yellow-300">{formatCurrency(campaign.currentAmount)}</span> terkumpul</p>
-            <p>Target: {formatCurrency(campaign.targetAmount)}</p>
+            {/* Menggunakan fungsi yang sudah diperbaiki */}
+            <p><span className="font-bold text-yellow-300">{formatCurrency(campaign.currentAmount)}</span> {t("table.collected")}</p>
+            <p>{t("table.target")}: {formatCurrency(campaign.targetAmount)}</p>
           </div>
         </div>
 

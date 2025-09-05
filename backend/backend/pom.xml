@@ -153,6 +153,13 @@
 			<version>4.0.0</version>
 		</dependency>
 
+		<!-- Cloud -->
+		<dependency>
+			<groupId>com.cloudinary</groupId>
+			<artifactId>cloudinary-http44</artifactId>
+			<version>1.33.0</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>

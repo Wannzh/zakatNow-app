@@ -7,7 +7,7 @@ import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import NotFound from './pages/NotFound';
 import Unauthorized from './pages/Unauthorized';
-import ProtectedRoute from './components/ProtectedRoute';   // <–– tambahkan ini
+import ProtectedRoute from './components/ProtectedRoute'; 
 import './i18n/i18n';
 import AdminDashboard from './pages/AdminDashboard';
 import ProtectedLayout from './components/ProtectedLayout';
@@ -17,6 +17,7 @@ import CampaignForm from './components/CampaignsForm';
 import AdminDonations from './pages/AdminDonations';
 import AdminWithdrawals from './pages/AdminWithdrawls';
 import AdminReports from './pages/AdminReports';
+import CampaignDetailPage from './pages/CampaignDetail';
 
 export default function App() {
   return (
@@ -50,6 +51,10 @@ export default function App() {
         <Route path="/admin-campaigns/create" element={
           <ProtectedRoute><ProtectedLayout isAdmin="true"><CampaignForm /></ProtectedLayout></ProtectedRoute>
         } />
+        <Route path="/campaigns/:id" element={
+          <ProtectedRoute><ProtectedLayout><CampaignDetailPage /></ProtectedLayout></ProtectedRoute>
+        } />
+
 
         {/* Route Donation */}
         <Route path="/admin-donations" element={
