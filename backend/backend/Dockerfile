@@ -22,7 +22,7 @@ RUN mvn install:install-file \
 RUN mvn clean package -DskipTests
 
 # Stage 2: Runtime
-FROM eclipse-temurin:21-jre-alpine
+FROM eclipse-temurin:21-jre
 WORKDIR /app
 
 # Copy hasil build dari stage sebelumnya
