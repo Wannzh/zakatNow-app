@@ -7,9 +7,9 @@ export default function Footer() {
 
   // Pindahkan array ke dalam komponen untuk akses ke fungsi `t`
   const socialLinks = [
-    { icon: <FaFacebook />, href: "*", label: t("footer.socials.facebook") },
-    { icon: <FaTwitter />, href: "*", label: t("footer.socials.twitter") },
-    { icon: <FaInstagram />, href: "*", label: t("footer.socials.instagram") },
+    { icon: <FaFacebook />, href: "/*", label: t("footer.socials.facebook") },
+    { icon: <FaTwitter />, href: "/*", label: t("footer.socials.twitter") },
+    { icon: <FaInstagram />, href: "/*", label: t("footer.socials.instagram") },
     { icon: <FaLinkedin />, href: "www.linkedin.com/in/muhamad-alwan-fadhlurrohman-238034315", label: t("footer.socials.linkedin") },
   ];
 
@@ -27,9 +27,9 @@ export default function Footer() {
             <h3 className="text-lg font-semibold">{t("footer.quickLinks")}</h3>
             <ul className="space-y-2 text-green-200">
               <li><a href="/about" className="hover:text-white transition-colors">{t("footer.about")}</a></li>
-              <li><a href="*" className="hover:text-white transition-colors">{t("footer.contact")}</a></li>
-              <li><a href="*" className="hover:text-white transition-colors">{t("footer.faq")}</a></li>
-              <li><a href="*" className="hover:text-white transition-colors">{t("footer.privacy")}</a></li>
+              <li><a href="/*" className="hover:text-white transition-colors">{t("footer.contact")}</a></li>
+              <li><a href="/*" className="hover:text-white transition-colors">{t("footer.faq")}</a></li>
+              <li><a href="/*" className="hover:text-white transition-colors">{t("footer.privacy")}</a></li>
             </ul>
           </div>
 

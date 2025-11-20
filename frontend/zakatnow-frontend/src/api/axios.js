@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'https://zakatnow-backend.onrender.com/api',
+  baseURL: 'https://api-zakatnow.alwanfdh.my.id/api',
 });
 
 api.interceptors.request.use(config => {
