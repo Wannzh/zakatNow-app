@@ -32,4 +32,4 @@ COPY --from=build /app/target/backend-0.0.1-SNAPSHOT.jar backend.jar
 EXPOSE 8080
 
 # Jalankan aplikasi dengan JVM memory limit
-ENTRYPOINT ["java","-Xmx512m","-jar","backend.jar"]
+ENTRYPOINT ["java", "-Djava.net.preferIPv4Stack=true", "-Xmx512m", "-jar", "backend.jar"]
