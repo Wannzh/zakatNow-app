@@ -1,5 +1,6 @@
 package com.zakatnow.backend.services.auth;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -87,6 +88,7 @@ public class AuthServiceImpl implements AuthService {
                                 .fullName(signUpRequest.getFullName())
                                 .phoneNumber(signUpRequest.getPhoneNumber())
                                 .address(signUpRequest.getAddress())
+                                .createdAt(LocalDateTime.now())
                                 .enabled(true)
                                 .build();
 
