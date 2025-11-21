@@ -24,7 +24,7 @@ public class MailConfig {
         
         // GUNAKAN HOST BREVO
         mailSender.setHost("smtp-relay.brevo.com");
-        mailSender.setPort(587);
+        mailSender.setPort(2525);
         
         mailSender.setUsername(mailUsername);
         mailSender.setPassword(mailPassword);
