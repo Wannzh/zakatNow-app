@@ -22,27 +22,23 @@ public class MailConfig {
     public JavaMailSender getJavaMailSender() {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
         
-        // Gunakan Port 465 (SMTPS)
-        mailSender.setHost("smtp.gmail.com");
-        mailSender.setPort(465);
-        mailSender.setProtocol("smtps"); // Penting: protocol smtps
+        // GUNAKAN HOST BREVO
+        mailSender.setHost("smtp-relay.brevo.com");
+        mailSender.setPort(587);
         
         mailSender.setUsername(mailUsername);
         mailSender.setPassword(mailPassword);
 
         Properties props = mailSender.getJavaMailProperties();
-        props.put("mail.transport.protocol", "smtps");
-        props.put("mail.smtps.auth", "true");
-        props.put("mail.smtps.ssl.enable", "true"); // SSL aktif sejak awal
-        props.put("mail.smtps.quitwait", "false");
+        props.put("mail.transport.protocol", "smtp");
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.smtp.starttls.required", "true");
         
-        // Debugging
-        props.put("mail.debug", "true");
-        
-        // Timeout settings (30 detik)
-        props.put("mail.smtps.connectiontimeout", "30000");
-        props.put("mail.smtps.timeout", "30000");
-        props.put("mail.smtps.writetimeout", "30000");
+        // Timeout settings (tetap dijaga agar aman)
+        props.put("mail.smtp.connectiontimeout", "15000");
+        props.put("mail.smtp.timeout", "15000");
+        props.put("mail.smtp.writetimeout", "15000");
 
         return mailSender;
     }
