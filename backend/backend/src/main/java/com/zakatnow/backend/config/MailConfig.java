@@ -22,27 +22,27 @@ public class MailConfig {
     public JavaMailSender getJavaMailSender() {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
         
-        // Konfigurasi Server & Port (Hardcoded agar pasti)
+        // Gunakan Port 465 (SMTPS)
         mailSender.setHost("smtp.gmail.com");
-        mailSender.setPort(587);
+        mailSender.setPort(465);
+        mailSender.setProtocol("smtps"); // Penting: protocol smtps
         
         mailSender.setUsername(mailUsername);
         mailSender.setPassword(mailPassword);
 
         Properties props = mailSender.getJavaMailProperties();
-        props.put("mail.transport.protocol", "smtp");
-        props.put("mail.smtp.auth", "true");
-        props.put("mail.smtp.starttls.enable", "true");
-        props.put("mail.smtp.starttls.required", "true");
+        props.put("mail.transport.protocol", "smtps");
+        props.put("mail.smtps.auth", "true");
+        props.put("mail.smtps.ssl.enable", "true"); // SSL aktif sejak awal
+        props.put("mail.smtps.quitwait", "false");
         
-        // Debugging (Cek log Render jika masih error)
+        // Debugging
         props.put("mail.debug", "true");
         
-        // Timeout settings (Sangat Penting untuk Render)
-        // Set ke 30 detik (30000 ms)
-        props.put("mail.smtp.connectiontimeout", "30000");
-        props.put("mail.smtp.timeout", "30000");
-        props.put("mail.smtp.writetimeout", "30000");
+        // Timeout settings (30 detik)
+        props.put("mail.smtps.connectiontimeout", "30000");
+        props.put("mail.smtps.timeout", "30000");
+        props.put("mail.smtps.writetimeout", "30000");
 
         return mailSender;
     }
