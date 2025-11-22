@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
 import { getCampaignById } from "../api/campaign";
-import { FaUserCircle } from "react-icons/fa";
+import { FaUserCircle, FaArrowLeft } from "react-icons/fa";
 
 const ProgressBar = ({ current, target }) => {
   const numericCurrent = typeof current === 'number' ? current : 0;
@@ -25,6 +25,7 @@ const ProgressBar = ({ current, target }) => {
 export default function CampaignDetailPage() {
   const { id } = useParams();
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [campaign, setCampaign] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -66,6 +67,14 @@ export default function CampaignDetailPage() {
         animate={{ opacity: 1 }}
         className="max-w-4xl p-6 mx-auto shadow-lg bg-white/10 sm:p-8 rounded-2xl backdrop-blur-md"
       >
+        <button 
+            onClick={() => navigate(-1)} 
+            className="flex items-center gap-2 mb-6 text-green-200 transition-colors hover:text-white group"
+        >
+            <FaArrowLeft className="transition-transform group-hover:-translate-x-1" /> 
+            {t("common.cancel")} {/* Menggunakan 'Batal' atau bisa diganti text manual "Kembali" */}
+        </button>
+        
         <img 
             src={campaign.imageUrl || 'https://placehold.co/1200x600/10B981/FFFFFF?text=ZakatNow'} 
             alt={campaign.title}

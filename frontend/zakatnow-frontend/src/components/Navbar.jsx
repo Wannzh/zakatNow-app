@@ -24,6 +24,15 @@ export default function Navbar() {
   const username = auth?.username;
   const roles = auth?.roles || [];
 
+  let logoTarget = "/";
+  if (username) {
+    if (roles.includes("ROLE_ADMIN")) {
+      logoTarget = "/admin-dashboard";
+    } else {
+      logoTarget = "/dashboard";
+    }
+  }
+
   const handleLogout = () => {
     localStorage.removeItem("auth");
     navigate("/login");
@@ -31,21 +40,21 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="bg-green-600 text-white shadow-lg">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          <Link to="/" className="flex-shrink-0 font-bold text-xl">
+    <nav className="text-white bg-green-600 shadow-lg">
+      <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16">
+          <Link to={logoTarget} className="flex-shrink-0 text-xl font-bold">
             {t("common.appName")}
           </Link>
           <div className="flex items-center space-x-4">
-            <Link to="/campaigns" className="hover:text-green-200 transition-colors hidden sm:block">{t("navbar.campaigns")}</Link>
+            <Link to="/campaigns" className="hidden transition-colors hover:text-green-200 sm:block">{t("navbar.campaigns")}</Link>
             {roles.includes("ROLE_ADMIN") && (
-              <Link to="/admin-dashboard" className="hover:text-green-200 transition-colors hidden sm:block">{t("navbar.admin")}</Link>
+              <Link to="/admin-dashboard" className="hidden transition-colors hover:text-green-200 sm:block">{t("navbar.admin")}</Link>
             )}
 
-            <LanguageSwitcher className="flex items-center gap-2 p-2 rounded-full hover:bg-green-700 transition-colors" />
+            <LanguageSwitcher className="flex items-center gap-2 p-2 transition-colors rounded-full hover:bg-green-700" />
 
-            <div className="hidden sm:block border-l border-white/20 h-8"></div>
+            <div className="hidden h-8 border-l sm:block border-white/20"></div>
 
             {username ? (
               <div className="flex items-center space-x-4">
@@ -53,12 +62,12 @@ export default function Navbar() {
                   <FaUserCircle />
                   <span className="font-semibold">{username}</span>
                 </div>
-                <button onClick={handleLogout} className="px-3 py-1 bg-green-500 rounded hover:bg-green-400 transition-colors">
+                <button onClick={handleLogout} className="px-3 py-1 transition-colors bg-green-500 rounded hover:bg-green-400">
                   {t("navbar.logout")}
                 </button>
               </div>
             ) : (
-              <Link to="/login" className="px-4 py-2 bg-green-500 rounded hover:bg-green-400 transition-colors font-semibold">
+              <Link to="/login" className="px-4 py-2 font-semibold transition-colors bg-green-500 rounded hover:bg-green-400">
                 {t("navbar.login")}
               </Link>
             )}

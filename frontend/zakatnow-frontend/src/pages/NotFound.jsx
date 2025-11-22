@@ -21,7 +21,7 @@ export default function NotFound() {
   };
 
   return (
-    <div className="relative min-h-screen bg-gradient-to-tr from-indigo-50 via-purple-100 to-pink-50 overflow-hidden flex items-center justify-center px-6 py-12">
+    <div className="relative flex items-center justify-center min-h-screen px-6 py-12 overflow-hidden bg-gradient-to-tr from-indigo-50 via-purple-100 to-pink-50">
       {/* Subtle animated background gradient */}
       <motion.div
         className="absolute inset-0 bg-gradient-to-r from-indigo-300 via-purple-300 to-pink-300 opacity-20 animate-gradient-x"
@@ -32,22 +32,22 @@ export default function NotFound() {
       />
 
       <motion.div
-        className="relative max-w-5xl w-full flex flex-col md:flex-row items-center md:items-start gap-12"
+        className="relative flex flex-col items-center w-full max-w-5xl gap-12 md:flex-row md:items-start"
         variants={containerVariants}
         initial="hidden"
         animate="visible"
       >
         {/* Left side: Text content */}
-        <motion.div className="flex flex-col items-center md:items-start text-center md:text-left" variants={itemVariants}>
+        <motion.div className="flex flex-col items-center text-center md:items-start md:text-left" variants={itemVariants}>
           {/* Large 404 with creative styling */}
           <h1
             aria-label="404"
             className="text-[10rem] font-extrabold leading-none select-none flex space-x-4"
           >
-            <span className="text-indigo-600 drop-shadow-lg hover:text-indigo-700 transition-colors cursor-default">
+            <span className="text-indigo-600 transition-colors cursor-default drop-shadow-lg hover:text-indigo-700">
               4
             </span>
-            <span className="text-pink-600 drop-shadow-lg hover:text-pink-700 transition-colors cursor-default relative">
+            <span className="relative text-pink-600 transition-colors cursor-default drop-shadow-lg hover:text-pink-700">
               0
               {/* Subtle texture pattern inside zero */}
               <svg
@@ -71,26 +71,26 @@ export default function NotFound() {
                 <rect width="100%" height="100%" fill="url(#dots)" />
               </svg>
             </span>
-            <span className="text-indigo-600 drop-shadow-lg hover:text-indigo-700 transition-colors cursor-default">
+            <span className="text-indigo-600 transition-colors cursor-default drop-shadow-lg hover:text-indigo-700">
               4
             </span>
           </h1>
 
           {/* Catchy phrase */}
-          <h2 className="text-3xl md:text-4xl font-semibold text-gray-800 mb-4 select-none">
+          <h2 className="mb-4 text-3xl font-semibold text-gray-800 select-none md:text-4xl">
             Lost in the Digital Wilderness?
           </h2>
 
           {/* Description */}
-          <p className="text-gray-700 max-w-md mb-8 leading-relaxed">
+          <p className="max-w-md mb-8 leading-relaxed text-gray-700">
             It looks like the page you were looking for decided to go on an
             adventure without us. Let&apos;s get you back on track!
           </p>
 
           {/* Call to action button */}
           <button
-            onClick={() => navigate("/")}
-            className="inline-block bg-indigo-600 text-white font-semibold py-3 px-8 rounded-lg shadow-lg hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-300 transition transform hover:-translate-y-1 active:translate-y-0 active:scale-95"
+            onClick={() => navigate(-1)}
+            className="inline-block px-8 py-3 font-semibold text-white transition transform bg-indigo-600 rounded-lg shadow-lg hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-300 hover:-translate-y-1 active:translate-y-0 active:scale-95"
             aria-label="Take me back home"
             type="button"
           >
@@ -100,7 +100,7 @@ export default function NotFound() {
 
         {/* Right side: Animated SVG illustration */}
         <motion.div
-          className="w-full max-w-md md:max-w-lg select-none"
+          className="w-full max-w-md select-none md:max-w-lg"
           variants={itemVariants}
           aria-hidden="true"
         >
