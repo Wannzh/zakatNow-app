@@ -21,13 +21,13 @@ const ConfirmationModal = ({ isOpen, onClose, onConfirm, status }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/60 flex justify-center items-center z-50 backdrop-blur-sm">
-      <div className="bg-green-800 p-6 rounded-lg shadow-xl text-white w-full max-w-sm border border-white/10">
-        <h2 className="text-xl font-bold mb-4">{t("modal.confirmTitle")}</h2>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+      <div className="w-full max-w-sm p-6 text-white bg-green-800 border rounded-lg shadow-xl border-white/10">
+        <h2 className="mb-4 text-xl font-bold">{t("modal.confirmTitle")}</h2>
         <p className="mb-6">{t("modal.confirmMessage", { status })}</p>
         <div className="flex justify-end gap-4">
-          <button onClick={onClose} className="px-4 py-2 bg-white/20 rounded hover:bg-white/30 transition">{t("common.cancel")}</button>
-          <button onClick={onConfirm} className="px-4 py-2 bg-yellow-400 text-green-900 font-semibold rounded hover:bg-yellow-300 transition">{t("modal.confirmButton")}</button>
+          <button onClick={onClose} className="px-4 py-2 transition rounded bg-white/20 hover:bg-white/30">{t("common.cancel")}</button>
+          <button onClick={onConfirm} className="px-4 py-2 font-semibold text-green-900 transition bg-yellow-400 rounded hover:bg-yellow-300">{t("modal.confirmButton")}</button>
         </div>
       </div>
     </div>
@@ -38,16 +38,16 @@ const ReviewCancelModal = ({ isOpen, onClose, onAction, campaign }) => {
     const { t } = useTranslation();
     if (!isOpen || !campaign) return null;
     return (
-      <div className="fixed inset-0 bg-black/60 flex justify-center items-center z-50 backdrop-blur-sm">
-        <div className="bg-green-800 p-6 rounded-lg shadow-xl text-white w-full max-w-md border border-white/10">
-          <h2 className="text-xl font-bold mb-4">{t("modal.reviewTitle")}</h2>
-          <p className="text-sm text-white/70 mb-2">{t("modal.campaignTitle")}: <span className="font-semibold text-white">{campaign.title}</span></p>
-          <div className="bg-yellow-900/30 p-4 rounded-md border border-yellow-500/50 mb-6">
-            <p className="text-sm font-semibold mb-1">{t("modal.cancelReason")}:</p>
-            <p className="text-sm text-white/90 italic">"{campaign.cancelReason || 'No reason provided.'}"</p>
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+        <div className="w-full max-w-md p-6 text-white bg-green-800 border rounded-lg shadow-xl border-white/10">
+          <h2 className="mb-4 text-xl font-bold">{t("modal.reviewTitle")}</h2>
+          <p className="mb-2 text-sm text-white/70">{t("modal.campaignTitle")}: <span className="font-semibold text-white">{campaign.title}</span></p>
+          <div className="p-4 mb-6 border rounded-md bg-yellow-900/30 border-yellow-500/50">
+            <p className="mb-1 text-sm font-semibold">{t("modal.cancelReason")}:</p>
+            <p className="text-sm italic text-white/90">"{campaign.cancelReason || 'No reason provided.'}"</p>
           </div>
           <div className="flex justify-end gap-4">
-            <button onClick={() => onAction('approve')} className="px-4 py-2 bg-red-500 text-white font-semibold rounded hover:bg-red-400 transition">{t("modal.approveButton")}</button>
+            <button onClick={() => onAction('approve')} className="px-4 py-2 font-semibold text-white transition bg-red-500 rounded hover:bg-red-400">{t("modal.approveButton")}</button>
           </div>
         </div>
       </div>
@@ -118,33 +118,33 @@ export default function CampaignsTable({ campaigns, onDataChange }) {
               <th className="p-4 text-sm font-semibold text-white/70">{t("table.collected")}</th>
               <th className="p-4 text-sm font-semibold text-white/70">{t("table.target")}</th>
               <th className="p-4 text-sm font-semibold text-white/70">{t("table.status")}</th>
-              <th className="p-4 text-sm font-semibold text-white/70 text-center">{t("table.actions")}</th>
+              <th className="p-4 text-sm font-semibold text-center text-white/70">{t("table.actions")}</th>
             </tr>
         </thead>
         <tbody>
           {campaigns.map((campaign, index) => (
             <tr key={campaign.id} className={`border-b border-white/10 transition-colors ${campaign.cancelRequested ? 'bg-yellow-900/20 hover:bg-yellow-900/30' : 'hover:bg-white/5'}`}>
               <td className="p-4">{index + 1}</td>
-              <td className="p-4 font-medium max-w-xs truncate">{campaign.title}</td>
+              <td className="max-w-xs p-4 font-medium truncate">{campaign.title}</td>
               <td className="p-4"><div className="flex items-center gap-2"><FaUserCircle className="text-green-200"/><span>{campaign.createdBy || 'N/A'}</span></div></td>
-              <td className="p-4 font-mono text-yellow-300">{formatCurrency(campaign.currentAmount)}</td>
+              <td className="p-4 font-mono text-yellow-300">{formatCurrency(campaign.collectAmount)}</td>
               <td className="p-4 font-mono">{formatCurrency(campaign.targetAmount)}</td>
               <td className="p-4"><StatusBadge status={campaign.status} /></td>
               <td className="p-4 text-center">
                 {campaign.cancelRequested ? (
-                  <button onClick={() => setReviewModal({ isOpen: true, campaign })} className="flex items-center gap-2 mx-auto px-3 py-1 bg-yellow-400 text-yellow-900 text-sm font-semibold rounded hover:bg-yellow-300">
+                  <button onClick={() => setReviewModal({ isOpen: true, campaign })} className="flex items-center gap-2 px-3 py-1 mx-auto text-sm font-semibold text-yellow-900 bg-yellow-400 rounded hover:bg-yellow-300">
                     <FaExclamationTriangle />
                     <span>{t("table.review")}</span>
                   </button>
                 ) : finalStatuses.includes(campaign.status) ? (
-                  <button className="p-2 rounded-full text-white/30 cursor-not-allowed" disabled><BsThreeDotsVertical /></button>
+                  <button className="p-2 rounded-full cursor-not-allowed text-white/30" disabled><BsThreeDotsVertical /></button>
                 ) : (
                   <div className="relative inline-block">
-                    <button onClick={() => setOpenMenuId(openMenuId === campaign.id ? null : campaign.id)} className="p-2 rounded-full hover:bg-white/20 transition"><BsThreeDotsVertical /></button>
+                    <button onClick={() => setOpenMenuId(openMenuId === campaign.id ? null : campaign.id)} className="p-2 transition rounded-full hover:bg-white/20"><BsThreeDotsVertical /></button>
                     {openMenuId === campaign.id && (
-                      <div className="absolute right-0 mt-2 w-48 bg-green-800 rounded-md shadow-lg z-10 text-left border border-white/10">
+                      <div className="absolute right-0 z-10 w-48 mt-2 text-left bg-green-800 border rounded-md shadow-lg border-white/10">
                         <div className="py-1">
-                          {availableStatuses.filter(s => s !== campaign.status).map(s => (<button key={s} onClick={() => openConfirmation(campaign.id, s)} className="block px-4 py-2 text-sm hover:bg-green-700 w-full text-left transition-colors">{t(`statuses.${s}`)}</button>))}
+                          {availableStatuses.filter(s => s !== campaign.status).map(s => (<button key={s} onClick={() => openConfirmation(campaign.id, s)} className="block w-full px-4 py-2 text-sm text-left transition-colors hover:bg-green-700">{t(`statuses.${s}`)}</button>))}
                         </div>
                       </div>
                     )}

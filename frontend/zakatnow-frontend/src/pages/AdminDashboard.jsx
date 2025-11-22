@@ -6,8 +6,8 @@ import { getCampaigns } from "../api/campaign";
 import { showError } from "../components/Toast";
 
 const StatCard = ({ label, value, icon }) => (
-  <motion.div variants={itemVariants} className="bg-white/10 p-6 rounded-2xl shadow-lg flex items-center gap-4">
-    <div className="bg-white/10 p-3 rounded-full">{icon}</div>
+  <motion.div variants={itemVariants} className="flex items-center gap-4 p-6 shadow-lg bg-white/10 rounded-2xl">
+    <div className="p-3 rounded-full bg-white/10">{icon}</div>
     <div>
       <p className="text-3xl font-bold">{value}</p>
       <p className="text-sm text-white/70">{label}</p>
@@ -38,8 +38,8 @@ const ProgressBar = ({ current, target }) => {
 const CampaignCard = ({ campaign }) => {
   const { t } = useTranslation();
 
-  const currentAmount = typeof campaign.currentAmount === 'number'
-    ? campaign.currentAmount
+  const currentAmount = typeof campaign.collectAmount === 'number'
+    ? campaign.collectAmount
     : 0;
 
   const formatCurrency = (amount) =>
@@ -50,16 +50,16 @@ const CampaignCard = ({ campaign }) => {
     }).format(amount);
 
   return (
-    <motion.div variants={itemVariants} className="bg-white/10 p-5 rounded-2xl shadow-lg flex flex-col justify-between">
+    <motion.div variants={itemVariants} className="flex flex-col justify-between p-5 shadow-lg bg-white/10 rounded-2xl">
       <div>
-        <div className="flex justify-between items-start mb-2">
-          <h3 className="font-bold text-lg">{campaign.title}</h3>
+        <div className="flex items-start justify-between mb-2">
+          <h3 className="text-lg font-bold">{campaign.title}</h3>
           <StatusBadge status={campaign.status} />
         </div>
 
         <ProgressBar current={currentAmount} target={campaign.targetAmount} />
 
-        <div className="flex justify-between text-sm mt-2">
+        <div className="flex justify-between mt-2 text-sm">
           <div>
             <p className="text-white/70">{t("table.collected")}</p>
             <p className="font-semibold text-yellow-300">{formatCurrency(currentAmount)}</p>
@@ -70,7 +70,7 @@ const CampaignCard = ({ campaign }) => {
           </div>
         </div>
       </div>
-      <Link to="/admin-campaigns" className="mt-4 text-center w-full bg-white/20 hover:bg-white/30 font-semibold py-2 rounded-lg transition-colors">
+      <Link to="/admin-campaigns" className="w-full py-2 mt-4 font-semibold text-center transition-colors rounded-lg bg-white/20 hover:bg-white/30">
         {t("adminDashboard.manageButton")}
       </Link>
     </motion.div>
@@ -108,7 +108,7 @@ export default function AdminDashboard({ userName, onRefresh }) {
   }, [t, onRefresh]);
 
   const stats = useMemo(() => {
-    const totalCollected = campaigns.reduce((acc, campaign) => acc + (campaign.currentAmount || 0), 0);
+    const totalCollected = campaigns.reduce((acc, campaign) => acc + (campaign.collectAmount || 0), 0);
     const totalCampaigns = campaigns.length;
     return {
       totalCollected,
@@ -119,39 +119,39 @@ export default function AdminDashboard({ userName, onRefresh }) {
   const formatCurrency = (amount) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(amount);
 
   return (
-    <div className="flex-1 min-h-screen p-8 bg-gradient-to-br from-green-500 via-emerald-600 to-green-700 text-white">
+    <div className="flex-1 min-h-screen p-8 text-white bg-gradient-to-br from-green-500 via-emerald-600 to-green-700">
       <motion.div
-        className="max-w-7xl mx-auto"
+        className="mx-auto max-w-7xl"
         variants={containerVariants}
         initial="hidden"
         animate="visible"
       >
-        <motion.h1 variants={itemVariants} className="text-4xl font-bold mb-2">
+        <motion.h1 variants={itemVariants} className="mb-2 text-4xl font-bold">
           {t("adminDashboard.title")}
         </motion.h1>
-        <motion.p variants={itemVariants} className="text-white/80 mb-8 text-lg">
+        <motion.p variants={itemVariants} className="mb-8 text-lg text-white/80">
           {t("dashboard.welcome", { name: userName || 'Admin' })}
         </motion.p>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-1 gap-6 mb-8 md:grid-cols-2 lg:grid-cols-3">
           <StatCard label={t("adminDashboard.totalCollected")} value={formatCurrency(stats.totalCollected)} icon={"💰"} />
           <StatCard label={t("adminDashboard.activeCampaigns")} value={stats.totalCampaigns} icon={"🚀"} />
         </div>
 
-        <motion.h2 variants={itemVariants} className="text-2xl font-semibold text-white/90 mb-6">
+        <motion.h2 variants={itemVariants} className="mb-6 text-2xl font-semibold text-white/90">
           {t("adminDashboard.activeCampaignsList")}
         </motion.h2>
 
         {loading ? (
-          <motion.div variants={itemVariants} className="text-center text-white/80 py-10">
+          <motion.div variants={itemVariants} className="py-10 text-center text-white/80">
             {t("adminDashboard.loading")}
           </motion.div>
         ) : campaigns.length === 0 ? (
-          <motion.div variants={itemVariants} className="text-center bg-white/10 p-10 rounded-2xl text-white/70">
+          <motion.div variants={itemVariants} className="p-10 text-center bg-white/10 rounded-2xl text-white/70">
             {t("adminDashboard.noCampaigns")}
           </motion.div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
             {campaigns.map((c) => (
               <CampaignCard key={c.id} campaign={c} />
             ))}

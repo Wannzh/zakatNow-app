@@ -4,6 +4,7 @@ const StatusBadge = ({ status }) => {
   const statusStyles = {
     PAID: "bg-green-400 text-green-900",
     PENDING: "bg-yellow-400 text-yellow-900",
+    CONFIRMED: "bg-green-400 text-green-900",
     FAILED: "bg-red-400 text-red-900",
   };
   return <span className={`px-2 py-1 text-xs font-semibold rounded-full ${statusStyles[status] || 'bg-gray-400 text-gray-900'}`}>{status || 'UNKNOWN'}</span>;
@@ -30,13 +31,13 @@ export default function DonationsTable({ donations }) {
         </thead>
         <tbody>
           {donations.map((donation) => (
-            <tr key={donation.id} className="border-b border-white/10 hover:bg-white/5 transition-colors">
-              <td className="p-4 font-mono text-xs text-white/60 truncate" title={donation.id}>{donation.id.substring(0, 8)}...</td>
-              <td className="p-4 font-medium max-w-xs truncate">{donation.campaignTitle}</td>
-              <td className="p-4">{donation.donatorName}</td>
+            <tr key={donation.id} className="transition-colors border-b border-white/10 hover:bg-white/5">
+              <td className="p-4 font-mono text-xs truncate text-white/60" title={donation.id}>{donation.id.substring(0, 8)}...</td>
+              <td className="max-w-xs p-4 font-medium truncate">{donation.campaignTitle}</td>
+              <td className="p-4">{donation.donorName || t("common.anonymous")}</td>
               <td className="p-4 font-mono text-yellow-300">{formatCurrency(donation.amount)}</td>
               <td className="p-4"><StatusBadge status={donation.status} /></td>
-              <td className="p-4">{formatDate(donation.createdAt)}</td>
+              <td className="p-4">{formatDate(donation.donatedAt)}</td>
             </tr>
           ))}
         </tbody>
