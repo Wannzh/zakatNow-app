@@ -9,7 +9,7 @@ export default function ProtectedLayout({ children, isAdmin = false }) {
       <div className="flex flex-col flex-1">
         {!isAdmin ? <Navbar /> : null}
         <main className="flex-1">{children}</main>
-        {!isAdmin ? null : <Footer />}
+        {isAdmin ? null : <Footer />}
       </div>
     </div>
   );
