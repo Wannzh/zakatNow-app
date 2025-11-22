@@ -8,7 +8,8 @@
     "loading": "Loading...",
     "success": "Success",
     "error": "Error",
-    "logout": "Logout"
+    "logout": "Logout",
+    "anonymous": "Anonymous"
   },
   "navbar": {
     "home": "Home",
@@ -123,6 +124,11 @@
     "uploadImage": "Upload Image",
     "donate": "Donate",
     "donateNow": "Donate Now"
+  },
+  "campaignDetail": {
+    "initiatedBy": "Initiated by <strong>{{name}}</strong>",
+    "loadError": "Failed to load campaign details.",
+    "notFound": "Campaign not found."
   },
   "campaignForm": {
     "createTitle": "Create New Campaign",
@@ -275,6 +281,7 @@
     "processing": "Processing...",
     "success": "Donation successful! Thank you.",
     "error": "Donation failed. Please try again.",
+    "paymentSuccess": "Payment confirmed! Thank you for your donation.",
     "invalidAmount": "Invalid donation amount.",
     "backToCampaign": "Back to Campaign",
     "campaignNotFound": "Campaign not found.",
@@ -286,6 +293,13 @@
       "EWALLET": "E-Wallet",
       "QRIS": "QRIS"
     },
-    "finalAmount": "Final Amount"
+    "finalAmount": "Final Amount",
+    "invoiceTitle": "Donation Successful!",
+    "invoiceSuccess": "Your donation is being processed. Please complete the payment.",
+    "invoiceAmount": "Payment Amount",
+    "invoiceStatus": "Payment Status",
+    "invoiceId": "Transaction ID",
+    "invoiceMessage": "Copy the transaction ID for reference, or click the button below to view the invoice.",
+    "viewInvoice": "View Invoice"
   }
 }
