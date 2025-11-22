@@ -11,9 +11,9 @@ const ProgressBar = ({ current, target }) => {
   const percentage = numericTarget > 0 ? (numericCurrent / numericTarget) * 100 : 0;
   
   return (
-    <div className="w-full bg-white/20 rounded-full h-4 my-2">
+    <div className="w-full h-4 my-2 rounded-full bg-white/20">
       <motion.div
-        className="bg-yellow-400 h-4 rounded-full"
+        className="h-4 bg-yellow-400 rounded-full"
         initial={{ width: 0 }}
         animate={{ width: `${percentage > 100 ? 100 : percentage}%` }}
         transition={{ duration: 1, ease: "easeInOut" }}
@@ -43,15 +43,15 @@ export default function CampaignDetailPage() {
     
     fetchCampaign();
     
-    const interval = setInterval(fetchCampaign, 10000);
+    const interval = setInterval(fetchCampaign, 5000);
 
     return () => clearInterval(interval);
 
   }, [id, t]);
 
-  if (loading) return <div className="text-white text-center p-12 min-h-screen bg-green-700">{t("common.loading")}</div>;
+  if (loading) return <div className="min-h-screen p-12 text-center text-white bg-green-700">{t("common.loading")}</div>;
   if (error || !campaign) {
-      return <div className="text-white text-center p-12 min-h-screen bg-green-700">{t("errors.notFound")}</div>;
+      return <div className="min-h-screen p-12 text-center text-white bg-green-700">{t("errors.notFound")}</div>;
   }
   
   const formatCurrency = (amount) => {
@@ -60,31 +60,31 @@ export default function CampaignDetailPage() {
   };
 
   return (
-    <main className="min-h-screen p-4 sm:p-8 bg-gradient-to-br from-green-600 via-emerald-500 to-green-700 text-white">
+    <main className="min-h-screen p-4 text-white sm:p-8 bg-gradient-to-br from-green-600 via-emerald-500 to-green-700">
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="max-w-4xl mx-auto bg-white/10 p-6 sm:p-8 rounded-2xl shadow-lg backdrop-blur-md"
+        className="max-w-4xl p-6 mx-auto shadow-lg bg-white/10 sm:p-8 rounded-2xl backdrop-blur-md"
       >
         <img 
             src={campaign.imageUrl || 'https://placehold.co/1200x600/10B981/FFFFFF?text=ZakatNow'} 
             alt={campaign.title}
-            className="w-full h-60 object-cover rounded-lg mb-6" 
+            className="object-cover w-full mb-6 rounded-lg h-60" 
         />
         
-        <h1 className="text-3xl sm:text-4xl font-bold mb-4">{campaign.title}</h1>
+        <h1 className="mb-4 text-3xl font-bold sm:text-4xl">{campaign.title}</h1>
 
-        <div className="flex items-center gap-3 text-green-200 text-sm mb-6">
+        <div className="flex items-center gap-3 mb-6 text-sm text-green-200">
             <FaUserCircle size={24} />
-            <span dangerouslySetInnerHTML={{ __html: t("campaignDetail.initiatedBy", { name: campaign.campaignerName || t("common.anonymous") }) }}></span>
+            <span dangerouslySetInnerHTML={{ __html: t("campaignDetail.initiatedBy", { name: campaign.createdBy || t("common.anonymous") }) }}></span>
         </div>
 
-        <p className="text-green-100 leading-relaxed mb-8">{campaign.description}</p>
+        <p className="mb-8 leading-relaxed text-green-100">{campaign.description}</p>
 
-        <div className="bg-white/10 p-6 rounded-lg">
-          <ProgressBar current={campaign.currentAmount} target={campaign.targetAmount} />
-          <div className="flex justify-between items-center mt-2 text-sm">
-            <p><span className="font-bold text-yellow-300">{formatCurrency(campaign.currentAmount)}</span> {t("table.collected")}</p>
+        <div className="p-6 rounded-lg bg-white/10">
+          <ProgressBar current={campaign.collectAmount} target={campaign.targetAmount} />
+          <div className="flex items-center justify-between mt-2 text-sm">
+            <p><span className="font-bold text-yellow-300">{formatCurrency(campaign.collectAmount)}</span> {t("table.collected")}</p>
             <p>{t("table.target")}: {formatCurrency(campaign.targetAmount)}</p>
           </div>
         </div>
