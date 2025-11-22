@@ -108,7 +108,7 @@ export default function CampaignsTable({ campaigns, onDataChange }) {
   const finalStatuses = ['COMPLETED', 'CLOSED', 'CANCELLED'];
 
   return (
-    <div className="overflow-x-auto">
+    <div className="overflow-x-auto pb-36">
       <table className="w-full text-left whitespace-nowrap">
         <thead className="border-b border-white/20">
             <tr>
