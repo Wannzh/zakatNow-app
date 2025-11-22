@@ -76,7 +76,7 @@ export default function CampaignDetailPage() {
 
         <div className="flex items-center gap-3 mb-6 text-sm text-green-200">
             <FaUserCircle size={24} />
-            <span dangerouslySetInnerHTML={{ __html: t("campaignDetail.initiatedBy", { name: campaign.createdBy || t("common.anonymous") }) }}></span>
+            <span dangerouslySetInnerHTML={{ __html: t("campaignDetail.createdBy", { name: campaign.createdBy || t("common.anonymous") }) }}></span>
         </div>
 
         <p className="mb-8 leading-relaxed text-green-100">{campaign.description}</p>
